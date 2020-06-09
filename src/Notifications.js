@@ -9,12 +9,39 @@ import TextField from 'material-ui/TextField';
 import Toast from 'react-bootstrap/Toast';
 import { Row, Col } from 'react-bootstrap';
 
-
-
 class Notifications extends Component {
 
+constructor(props) {
+  super(props);
+  this.state = { notifications: {
+    'coucou':true,'bonjour':true} 
+  };
+}
+
+remove_notif(notif) {
+  var notifications = {...this.state.notifications}
+  notifications[notif] = false;
+  this.setState({notifications})
+  
+  }
+
+add_notif(notif) {
+  var notifications = {
+    ...this.state.notifications,
+  [notif] : true}
+  
+  this.setState({notifications})
+  /*
+  this.setState(state => {
+    const notifications = [...state.notifications, state.value]
+    return {
+        notifications
+       };
+    });
+  */
+  }
+
 render() {
-	
     return (
       <div>
         <MuiThemeProvider>
@@ -24,11 +51,15 @@ render() {
              />
  			</div>
         </MuiThemeProvider>
-      
-       
-      <Row>
-      <Col xs={6}>
-        <Toast show={true}>
+  
+      {
+        Object.keys(this.state.notifications).map(notification => (
+      <Row value={notification}>
+        <Toast onClose={() => {
+          this.remove_notif(notification);
+          }
+        } 
+        show={this.state.notifications[notification]} animation={true}>
           <Toast.Header>
             <img
               src="holder.js/20x20?text=%20"
@@ -38,31 +69,15 @@ render() {
             <strong className="mr-auto">Bootstrap</strong>
             <small>11 mins ago</small>
           </Toast.Header>
-          <Toast.Body>Woohoo, you're reading this text in a Toast!</Toast.Body>
+          <Toast.Body >{notification}</Toast.Body>
         </Toast>
-      </Col>
-      
-      <Col xs={6} className="my-1">
-        <Toast show={true} animation={false}>
-          <Toast.Header>
-            <img
-              src="holder.js/20x20?text=%20"
-              className="rounded mr-2"
-              alt=""
-            />
-            <strong className="mr-auto">Bootstrap</strong>
-            <small>11 mins ago</small>
-          </Toast.Header>
-          <Toast.Body>Woohoo, you're reading this text in a Toast!</Toast.Body>
-        </Toast>
-      </Col>
-      
-    </Row>
-  </div>
+      </Row>
+     ))
+    }
+    </div>
 
     );
   }
-
 
 }
 
