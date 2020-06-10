@@ -10,6 +10,5 @@ request.post('http://localhost:8080/notify/' + myArgs[0], {
     console.error(error)
     return
   }
-  
   console.log(body)
 })

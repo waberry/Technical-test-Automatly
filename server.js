@@ -17,18 +17,16 @@ app.get('/ping/', function (req, res) {
 app.post('/notify/:room', function (req, res) {
 var message = req.body.message;
 var room = req.params.room;
- io.sockets.emit('notification', message, room);
+ io.sockets.to(room).emit('notification', message);
  res.send('ok');
 });
-
-// WARNING: app.listen(80) will NOT work here!
 
 io.on('connection', (socket) => {
 	console.log("socket:\n" + socket.id);
   socket.emit('notification', "User " + socket.id +  " is connected.");
   socket.on('join', (room) => {
   	socket.join(room);
-  	socket.emit('notification', "User " + socket.id + " has joined the room " + room, room);
+  	socket.to(room).emit('notification', "User " + socket.id + " has joined the room " + room);
     console.log("room is : " + room);
   });
 });
@@ -38,5 +36,3 @@ app.get('*', function (req, res) {
 });
 
 server.listen(8080);
-
-//app.listen(process.env.PORT || 8080);
